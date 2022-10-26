@@ -25,6 +25,7 @@ use Twilio\VersionInfo;
  * @property Chat $chat
  * @property Conversations $conversations
  * @property Events $events
+ * @property Fax $fax
  * @property FlexApi $flexApi
  * @property FrontlineApi $frontlineApi
  * @property Insights $insights
@@ -35,11 +36,9 @@ use Twilio\VersionInfo;
  * @property Monitor $monitor
  * @property Notify $notify
  * @property Numbers $numbers
- * @property Oauth $oauth
  * @property Preview $preview
  * @property Pricing $pricing
  * @property Proxy $proxy
- * @property Routes $routes
  * @property Serverless $serverless
  * @property Studio $studio
  * @property Sync $sync
@@ -52,7 +51,6 @@ use Twilio\VersionInfo;
  * @property Wireless $wireless
  * @property Supersim $supersim
  * @property Bulkexports $bulkexports
- * @property Microvisor $microvisor
  * @property \Twilio\Rest\Api\V2010\AccountInstance $account
  * @property \Twilio\Rest\Api\V2010\Account\AddressList $addresses
  * @property \Twilio\Rest\Api\V2010\Account\ApplicationList $applications
@@ -112,7 +110,6 @@ class Client {
     protected $edge;
     protected $httpClient;
     protected $environment;
-    protected $userAgentExtensions;
     protected $logLevel;
     protected $_account;
     protected $_accounts;
@@ -121,6 +118,7 @@ class Client {
     protected $_chat;
     protected $_conversations;
     protected $_events;
+    protected $_fax;
     protected $_flexApi;
     protected $_frontlineApi;
     protected $_insights;
@@ -131,11 +129,9 @@ class Client {
     protected $_monitor;
     protected $_notify;
     protected $_numbers;
-    protected $_oauth;
     protected $_preview;
     protected $_pricing;
     protected $_proxy;
-    protected $_routes;
     protected $_serverless;
     protected $_studio;
     protected $_sync;
@@ -148,7 +144,6 @@ class Client {
     protected $_wireless;
     protected $_supersim;
     protected $_bulkexports;
-    protected $_microvisor;
 
     /**
      * Initializes the Twilio Client
@@ -162,10 +157,9 @@ class Client {
      * @param HttpClient $httpClient HttpClient, defaults to CurlClient
      * @param mixed[] $environment Environment to look for auth details, defaults
      *                             to $_ENV
-     * @param string[] $userAgentExtensions Additions to the user agent string
      * @throws ConfigurationException If valid authentication is not present
      */
-    public function __construct(string $username = null, string $password = null, string $accountSid = null, string $region = null, HttpClient $httpClient = null, array $environment = null, array $userAgentExtensions = null) {
+    public function __construct(string $username = null, string $password = null, string $accountSid = null, string $region = null, HttpClient $httpClient = null, array $environment = null) {
         $this->environment = $environment ?: \getenv();
 
         $this->username = $this->getArg($username, self::ENV_ACCOUNT_SID);
@@ -173,7 +167,6 @@ class Client {
         $this->region = $this->getArg($region, self::ENV_REGION);
         $this->edge = $this->getArg(null, self::ENV_EDGE);
         $this->logLevel = $this->getArg(null, self::ENV_LOG);
-        $this->userAgentExtensions = $userAgentExtensions ?: [];
 
         if (!$this->username || !$this->password) {
             throw new ConfigurationException('Credentials are required to create a Client');
@@ -227,12 +220,11 @@ class Client {
         $logLevel = (getenv('DEBUG_HTTP_TRAFFIC') === 'true' ? 'debug' : $this->getLogLevel());
 
         $headers['User-Agent'] = 'twilio-php/' . VersionInfo::string() .
-                                 ' (' . php_uname("s") . ' ' . php_uname("m") . ')' .
-                                 ' PHP/' . PHP_VERSION;
+                                 ' (PHP ' . PHP_VERSION . ')';
         $headers['Accept-Charset'] = 'utf-8';
 
-        if ($this->userAgentExtensions) {
-            $headers['User-Agent'] .= ' ' . implode(' ', $this->userAgentExtensions);
+        if ($method === 'POST' && !\array_key_exists('Content-Type', $headers)) {
+            $headers['Content-Type'] = 'application/x-www-form-urlencoded';
         }
 
         if (!\array_key_exists('Accept', $headers)) {
@@ -702,6 +694,18 @@ class Client {
     }
 
     /**
+     * Access the Fax Twilio Domain
+     *
+     * @return Fax Fax Twilio Domain
+     */
+    protected function getFax(): Fax {
+        if (!$this->_fax) {
+            $this->_fax = new Fax($this);
+        }
+        return $this->_fax;
+    }
+
+    /**
      * Access the FlexApi Twilio Domain
      *
      * @return FlexApi FlexApi Twilio Domain
@@ -822,18 +826,6 @@ class Client {
     }
 
     /**
-     * Access the Oauth Twilio Domain
-     *
-     * @return Oauth Oauth Twilio Domain
-     */
-    protected function getOauth(): Oauth {
-        if (!$this->_oauth) {
-            $this->_oauth = new Oauth($this);
-        }
-        return $this->_oauth;
-    }
-
-    /**
      * Access the Preview Twilio Domain
      *
      * @return Preview Preview Twilio Domain
@@ -867,18 +859,6 @@ class Client {
             $this->_proxy = new Proxy($this);
         }
         return $this->_proxy;
-    }
-
-    /**
-     * Access the Routes Twilio Domain
-     *
-     * @return Routes Routes Twilio Domain
-     */
-    protected function getRoutes(): Routes {
-        if (!$this->_routes) {
-            $this->_routes = new Routes($this);
-        }
-        return $this->_routes;
     }
 
     /**
@@ -1023,18 +1003,6 @@ class Client {
             $this->_bulkexports = new Bulkexports($this);
         }
         return $this->_bulkexports;
-    }
-
-    /**
-     * Access the Microvisor Twilio Domain
-     *
-     * @return Microvisor Microvisor Twilio Domain
-     */
-    protected function getMicrovisor(): Microvisor {
-        if (!$this->_microvisor) {
-            $this->_microvisor = new Microvisor($this);
-        }
-        return $this->_microvisor;
     }
 
     /**

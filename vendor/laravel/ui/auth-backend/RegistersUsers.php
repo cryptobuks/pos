@@ -6,6 +6,11 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Roles;
+use App\CustomerGroup;
+use App\Biller;
+use App\Warehouse;
+
 
 trait RegistersUsers
 {
@@ -18,7 +23,11 @@ trait RegistersUsers
      */
     public function showRegistrationForm()
     {
-        return view('auth.register');
+        $lims_role_list = Roles::where('is_active', true)->get();
+        $lims_customer_group_list = CustomerGroup::where('is_active', true)->get();
+        $lims_biller_list = Biller::where('is_active', true)->get();
+        $lims_warehouse_list = Warehouse::where('is_active', true)->get();
+        return view('auth.register', compact('lims_role_list', 'lims_customer_group_list', 'lims_biller_list', 'lims_warehouse_list'));
     }
 
     /**

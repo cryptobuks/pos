@@ -43,7 +43,7 @@ interface Connection
      *
      * @param string $sql
      *
-     * @return int|string
+     * @return int
      */
     public function exec($sql);
 

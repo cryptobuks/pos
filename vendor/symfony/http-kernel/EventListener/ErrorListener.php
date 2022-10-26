@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -33,14 +32,8 @@ class ErrorListener implements EventSubscriberInterface
     protected $controller;
     protected $logger;
     protected $debug;
-    /**
-     * @var array<class-string, array{log_level: string|null, status_code: int<100,599>|null}>
-     */
     protected $exceptionsMapping;
 
-    /**
-     * @param array<class-string, array{log_level: string|null, status_code: int<100,599>|null}> $exceptionsMapping
-     */
     public function __construct($controller, LoggerInterface $logger = null, bool $debug = false, array $exceptionsMapping = [])
     {
         $this->controller = $controller;
@@ -53,24 +46,11 @@ class ErrorListener implements EventSubscriberInterface
     {
         $throwable = $event->getThrowable();
         $logLevel = null;
-
         foreach ($this->exceptionsMapping as $class => $config) {
             if ($throwable instanceof $class && $config['log_level']) {
                 $logLevel = $config['log_level'];
                 break;
             }
-        }
-
-        foreach ($this->exceptionsMapping as $class => $config) {
-            if (!$throwable instanceof $class || !$config['status_code']) {
-                continue;
-            }
-            if (!$throwable instanceof HttpExceptionInterface || $throwable->getStatusCode() !== $config['status_code']) {
-                $headers = $throwable instanceof HttpExceptionInterface ? $throwable->getHeaders() : [];
-                $throwable = new HttpException($config['status_code'], $throwable->getMessage(), $throwable, $headers);
-                $event->setThrowable($throwable);
-            }
-            break;
         }
 
         $e = FlattenException::createFromThrowable($throwable);
@@ -106,6 +86,13 @@ class ErrorListener implements EventSubscriberInterface
             $prev->setValue($wrapper, $throwable);
 
             throw $e;
+        }
+
+        foreach ($this->exceptionsMapping as $exception => $config) {
+            if ($throwable instanceof $exception && $config['status_code']) {
+                $response->setStatusCode($config['status_code']);
+                break;
+            }
         }
 
         $event->setResponse($response);

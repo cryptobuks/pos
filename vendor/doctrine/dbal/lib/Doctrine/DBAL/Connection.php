@@ -41,7 +41,6 @@ use function key;
  * lazy connecting and more.
  *
  * @psalm-import-type Params from DriverManager
- * @psalm-consistent-constructor
  */
 class Connection implements DriverConnection
 {
@@ -799,7 +798,7 @@ class Connection implements DriverConnection
      * @param array<string, mixed>                                                 $criteria Deletion criteria
      * @param array<int, int|string|Type|null>|array<string, int|string|Type|null> $types    Parameter types
      *
-     * @return int|string The number of affected rows.
+     * @return int The number of affected rows.
      *
      * @throws Exception
      */
@@ -835,7 +834,7 @@ class Connection implements DriverConnection
      *
      * @param int $level The level to set.
      *
-     * @return int|string
+     * @return int
      */
     public function setTransactionIsolation($level)
     {
@@ -868,7 +867,7 @@ class Connection implements DriverConnection
      * @param array<string, mixed>                                                 $criteria Update criteria
      * @param array<int, int|string|Type|null>|array<string, int|string|Type|null> $types    Parameter types
      *
-     * @return int|string The number of affected rows.
+     * @return int The number of affected rows.
      *
      * @throws Exception
      */
@@ -903,7 +902,7 @@ class Connection implements DriverConnection
      * @param array<string, mixed>                                                 $data  Column-value pairs
      * @param array<int, int|string|Type|null>|array<string, int|string|Type|null> $types Parameter types
      *
-     * @return int|string The number of affected rows.
+     * @return int The number of affected rows.
      *
      * @throws Exception
      */
@@ -1472,7 +1471,7 @@ class Connection implements DriverConnection
      * @param array<int, mixed>|array<string, mixed>                               $params Statement parameters
      * @param array<int, int|string|Type|null>|array<string, int|string|Type|null> $types  Parameter types
      *
-     * @return int|string The number of affected rows.
+     * @return int The number of affected rows.
      *
      * @throws Exception
      */
@@ -1503,7 +1502,7 @@ class Connection implements DriverConnection
      * @param array<int, mixed>|array<string, mixed>                               $params Statement parameters
      * @param array<int, int|string|Type|null>|array<string, int|string|Type|null> $types  Parameter types
      *
-     * @return int|string The number of affected rows.
+     * @return int The number of affected rows.
      *
      * @throws Exception
      */
@@ -1556,7 +1555,7 @@ class Connection implements DriverConnection
      *
      * @param string $sql
      *
-     * @return int|string The number of affected rows.
+     * @return int The number of affected rows.
      *
      * @throws Exception
      */

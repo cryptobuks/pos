@@ -53,6 +53,8 @@ trait PayPalAPI
 
         if (isset($response['access_token'])) {
             $this->setAccessToken($response);
+
+            $this->setPayPalAppId($response);
         }
 
         return $response;
@@ -69,8 +71,6 @@ trait PayPalAPI
     {
         $this->access_token = $response['access_token'];
 
-        $this->setPayPalAppId($response);
-
         $this->options['headers']['Authorization'] = "{$response['token_type']} {$this->access_token}";
     }
 
@@ -83,8 +83,6 @@ trait PayPalAPI
      */
     private function setPayPalAppId(array $response)
     {
-        $app_id = empty($response['app_id']) ? $this->config['app_id'] : $response['app_id'];
-
-        $this->config['app_id'] = $app_id;
+        $this->config['app_id'] = empty($response['app_id']) ? $this->config['app_id'] : $response['app_id'];
     }
 }

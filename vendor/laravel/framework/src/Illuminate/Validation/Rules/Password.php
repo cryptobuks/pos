@@ -80,13 +80,6 @@ class Password implements Rule, DataAwareRule, ValidatorAwareRule
     protected $compromisedThreshold = 0;
 
     /**
-     * Additional validation rules that should be merged into the default rules during validation.
-     *
-     * @var array
-     */
-    protected $customRules = [];
-
-    /**
      * The failure messages, if any.
      *
      * @var array
@@ -267,19 +260,6 @@ class Password implements Rule, DataAwareRule, ValidatorAwareRule
     }
 
     /**
-     * Specify additional validation rules that should be merged with the default rules during validation.
-     *
-     * @param  string|array  $rules
-     * @return $this
-     */
-    public function rules($rules)
-    {
-        $this->customRules = Arr::wrap($rules);
-
-        return $this;
-    }
-
-    /**
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
@@ -292,7 +272,7 @@ class Password implements Rule, DataAwareRule, ValidatorAwareRule
 
         $validator = Validator::make(
             $this->data,
-            [$attribute => array_merge(['string', 'min:'.$this->min], $this->customRules)],
+            [$attribute => 'string|min:'.$this->min],
             $this->validator->customMessages,
             $this->validator->customAttributes
         )->after(function ($validator) use ($attribute, $value) {

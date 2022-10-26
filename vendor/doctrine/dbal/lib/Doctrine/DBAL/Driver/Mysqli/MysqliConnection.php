@@ -68,7 +68,7 @@ class MysqliConnection implements ConnectionInterface, PingableConnection, Serve
         $socket = $params['unix_socket'] ?? ini_get('mysqli.default_socket');
         $dbname = $params['dbname'] ?? null;
 
-        $flags = $driverOptions[static::OPTION_FLAGS] ?? 0;
+        $flags = $driverOptions[static::OPTION_FLAGS] ?? null;
 
         $conn = mysqli_init();
         assert($conn !== false);

@@ -192,7 +192,7 @@ EOF;
     /**
      * {@inheritdoc}
      *
-     * @param Response $response
+     * @param Request $request
      *
      * @return DomResponse
      */

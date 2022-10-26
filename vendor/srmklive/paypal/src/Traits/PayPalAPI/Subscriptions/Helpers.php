@@ -29,16 +29,6 @@ trait Helpers
     protected $billing_plan;
 
     /**
-     * @var string
-     */
-    protected $return_url;
-
-    /**
-     * @var string
-     */
-    protected $cancel_url;
-
-    /**
      * Setup a subscription.
      *
      * @param string $customer_name
@@ -53,7 +43,7 @@ trait Helpers
     {
         $start_date = isset($start_date) ? Carbon::parse($start_date)->toIso8601String() : Carbon::now()->toIso8601String();
 
-        $body = [
+        $subscription = $this->createSubscription([
             'plan_id'    => $this->billing_plan['id'],
             'start_time' => $start_date,
             'quantity'   => 1,
@@ -63,22 +53,11 @@ trait Helpers
                 ],
                 'email_address' => $customer_email,
             ],
-        ];
-
-        if ($this->return_url && $this->cancel_url) {
-            $body['application_context'] = [
-                'return_url' => $this->return_url,
-                'cancel_url' => $this->cancel_url,
-            ];
-        }
-
-        $subscription = $this->createSubscription($body);
+        ]);
 
         unset($this->product);
         unset($this->billing_plan);
         unset($this->trial_pricing);
-        unset($this->return_url);
-        unset($this->cancel_url);
 
         return $subscription;
     }
@@ -87,12 +66,12 @@ trait Helpers
      * Add a subscription trial pricing tier.
      *
      * @param string    $interval_type
-     * @param int       $interval_count
+     * @param string    $interval_count
      * @param float|int $price
      *
      * @return \Srmklive\PayPal\Services\PayPal
      */
-    public function addPlanTrialPricing(string $interval_type, int $interval_count, float $price = 0): \Srmklive\PayPal\Services\PayPal
+    public function addPlanTrialPricing(string $interval_type, string $interval_count, float $price = 0): \Srmklive\PayPal\Services\PayPal
     {
         $this->trial_pricing = $this->addPlanBillingCycle($interval_type, $interval_count, $price, true);
 
@@ -117,7 +96,7 @@ trait Helpers
         }
 
         $plan_pricing = $this->addPlanBillingCycle('DAY', 1, $price);
-        $billing_cycles = empty($this->trial_pricing) ? [$plan_pricing] : collect([$this->trial_pricing, $plan_pricing])->filter()->toArray();
+        $billing_cycles = collect([$this->trial_pricing, $plan_pricing])->filter()->toArray();
 
         $this->addBillingPlan($name, $description, $billing_cycles);
 
@@ -142,7 +121,7 @@ trait Helpers
         }
 
         $plan_pricing = $this->addPlanBillingCycle('WEEK', 1, $price);
-        $billing_cycles = empty($this->trial_pricing) ? [$plan_pricing] : collect([$this->trial_pricing, $plan_pricing])->filter()->toArray();
+        $billing_cycles = collect([$this->trial_pricing, $plan_pricing])->filter()->toArray();
 
         $this->addBillingPlan($name, $description, $billing_cycles);
 
@@ -167,7 +146,7 @@ trait Helpers
         }
 
         $plan_pricing = $this->addPlanBillingCycle('MONTH', 1, $price);
-        $billing_cycles = empty($this->trial_pricing) ? [$plan_pricing] : collect([$this->trial_pricing, $plan_pricing])->filter()->toArray();
+        $billing_cycles = collect([$this->trial_pricing, $plan_pricing])->filter()->toArray();
 
         $this->addBillingPlan($name, $description, $billing_cycles);
 
@@ -192,40 +171,7 @@ trait Helpers
         }
 
         $plan_pricing = $this->addPlanBillingCycle('YEAR', 1, $price);
-        $billing_cycles = empty($this->trial_pricing) ? [$plan_pricing] : collect([$this->trial_pricing, $plan_pricing])->filter()->toArray();
-
-        $this->addBillingPlan($name, $description, $billing_cycles);
-
-        return $this;
-    }
-
-    /**
-     * Create a recurring billing plan with custom intervals.
-     *
-     * @param string    $name
-     * @param string    $description
-     * @param float|int $price
-     * @param string    $interval_unit
-     * @param int       $interval_count
-     *
-     * @throws Throwable
-     *
-     * @return \Srmklive\PayPal\Services\PayPal
-     */
-    public function addCustomPlan(string $name, string $description, float $price, string $interval_unit, int $interval_count): \Srmklive\PayPal\Services\PayPal
-    {
-        $billing_intervals = ['DAY', 'WEEK', 'MONTH', 'YEAR'];
-
-        if (isset($this->billing_plan)) {
-            return $this;
-        }
-
-        if (!in_array($interval_unit, $billing_intervals)) {
-            throw new \RuntimeException('Billing intervals should either be '.implode(', ', $billing_intervals));
-        }
-
-        $plan_pricing = $this->addPlanBillingCycle($interval_unit, $interval_count, $price);
-        $billing_cycles = empty($this->trial_pricing) ? [$plan_pricing] : collect([$this->trial_pricing, $plan_pricing])->filter()->toArray();
+        $billing_cycles = collect([$this->trial_pricing, $plan_pricing])->filter()->toArray();
 
         $this->addBillingPlan($name, $description, $billing_cycles);
 
@@ -251,19 +197,13 @@ trait Helpers
             ],
         ];
 
-        if (empty($this->trial_pricing)) {
-            $plan_sequence = 1;
-        } else {
-            $plan_sequence = 2;
-        }
-
         return [
             'frequency' => [
                 'interval_unit'  => $interval_unit,
                 'interval_count' => $interval_count,
             ],
             'tenure_type'    => ($trial === true) ? 'TRIAL' : 'REGULAR',
-            'sequence'       => ($trial === true) ? 1 : $plan_sequence,
+            'sequence'       => ($trial === true) ? 1 : 2,
             'total_cycles'   => ($trial === true) ? 1 : 0,
             'pricing_scheme' => $pricing_scheme,
         ];
@@ -360,21 +300,5 @@ trait Helpers
         ];
 
         $this->billing_plan = $this->createPlan($plan_params, $request_id);
-    }
-
-    /**
-     * Set return & cancel urls.
-     *
-     * @param string $return_url
-     * @param string $cancel_url
-     *
-     * @return \Srmklive\PayPal\Services\PayPal
-     */
-    public function setReturnAndCancelUrl(string $return_url, string $cancel_url): \Srmklive\PayPal\Services\PayPal
-    {
-        $this->return_url = $return_url;
-        $this->cancel_url = $cancel_url;
-
-        return $this;
     }
 }

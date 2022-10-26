@@ -10,9 +10,7 @@
 namespace PHPUnit\Framework;
 
 use const PHP_EOL;
-use function class_exists;
 use function count;
-use function extension_loaded;
 use function function_exists;
 use function get_class;
 use function sprintf;
@@ -757,11 +755,9 @@ final class TestResult implements Countable
                 sprintf(
                     '%s in %s:%s',
                     $e->getMessage(),
-                    $frame['file'] ?? $e->getFile(),
-                    $frame['line'] ?? $e->getLine()
-                ),
-                0,
-                $e
+                    $frame['file'],
+                    $frame['line']
+                )
             );
         } catch (Warning $e) {
             $warning = true;
