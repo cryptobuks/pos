@@ -197,7 +197,6 @@ return [
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
-        JoeDixon\Translation\TranslationServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
@@ -215,7 +214,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        App\Providers\TranslationServiceProvider::class,
+        // App\Providers\TranslationServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
@@ -224,6 +223,7 @@ return [
         Spatie\CookieConsent\CookieConsentServiceProvider::class,
         Spatie\EloquentSortable\EloquentSortableServiceProvider::class,
         Unicodeveloper\Paystack\PaystackServiceProvider::class,
+        // JoeDixon\LaravelTranslation\TranslationServiceProvider::class
 
     ],
 

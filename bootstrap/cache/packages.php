@@ -1,4 +1,40 @@
 <?php return array (
+  'akaunting/laravel-money' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Akaunting\\Money\\Provider',
+    ),
+  ),
+  'barryvdh/laravel-translation-manager' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Barryvdh\\TranslationManager\\ManagerServiceProvider',
+    ),
+  ),
+  'biscolab/laravel-recaptcha' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Biscolab\\ReCaptcha\\ReCaptchaServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'ReCaptcha' => 'Biscolab\\ReCaptcha\\Facades\\ReCaptcha',
+    ),
+  ),
+  'darryldecode/cart' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Darryldecode\\Cart\\CartServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Cart' => 'Darryldecode\\Cart\\Facades\\CartFacade',
+    ),
+  ),
   'facade/ignition' => 
   array (
     'providers' => 
@@ -91,6 +127,38 @@
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     ),
   ),
+  'onecentlin/laravel-adminer' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Onecentlin\\Adminer\\ServiceProvider',
+    ),
+  ),
+  'spatie/eloquent-sortable' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Spatie\\EloquentSortable\\EloquentSortableServiceProvider',
+    ),
+  ),
+  'spatie/geocoder' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Spatie\\Geocoder\\GeocoderServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Geocoder' => 'Spatie\\Geocoder\\Facades\\Geocoder',
+    ),
+  ),
+  'spatie/laravel-cookie-consent' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Spatie\\CookieConsent\\CookieConsentServiceProvider',
+    ),
+  ),
   'spatie/laravel-permission' => 
   array (
     'providers' => 
@@ -107,6 +175,17 @@
     'aliases' => 
     array (
       'PayPal' => 'Srmklive\\PayPal\\Facades\\PayPal',
+    ),
+  ),
+  'unicodeveloper/laravel-paystack' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Unicodeveloper\\Paystack\\PaystackServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Paystack' => 'Unicodeveloper\\Paystack\\Facades\\Paystack',
     ),
   ),
 );
