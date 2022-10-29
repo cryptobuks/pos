@@ -12,23 +12,64 @@
     <link rel="icon" type="image/png" href="{{url('public/logo', $general_setting->site_logo)}}" />
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css">
+    
     <!-- Google fonts - Roboto -->
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Nunito:400,500,700" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css?family=Nunito:400,500,700" rel="stylesheet"></noscript>
+    
     <!-- theme stylesheet-->
     <link rel="stylesheet" href="<?php echo asset('css/style.default.css') ?>" id="theme-stylesheet" type="text/css">
+    
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="<?php echo asset('css/custom-'.$general_setting->theme) ?>" type="text/css">
+    <link rel="stylesheet" href="<?php echo asset('css/style.min.css') ?>" type="text/css">
+
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
 
-
     <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.min.js') ?>"></script>
-
   </head>
+
   <body>
-    <div class="page login-page">
+    <div class="login">
+      <div class="box-login">
+        <div class="login-action">
+          <div class="logo">
+            <img src="{{ url('public/logo/analytics.png') }}" alt="">
+            <h5>SI Inventory & Finance</h5>
+          </div>
+
+          <form action="{{ route('login') }}" method="post" id="login-form">
+            @csrf
+            <div class="action">
+              <div class="header-welcome">
+                <h2>Welcome to our System</h2>
+                <p class="down-title">Please enter your detail</p>
+              </div>
+
+              <div class="input-field">
+                <p>Username</p>
+                <input id="login-username" type="text" name="name" placeholder="Please input username...">
+              </div>
+              <div class="input-field">
+                <p>Password</p>
+                <input id="login-password" type="password" name="password" id="" placeholder="Please input password...">
+              </div>
+  
+              <button class="btn-login">Masuk</button>
+  
+              <a href="{{ route('password.request') }}">{{ trans('file.Forgot Password?') }}</a>
+            </div>
+          </form>
+        </div>
+        <div class="login-logo">
+          <img src="{{ url('public/images/for-login.png') }}" alt="">
+        </div>
+      </div>
+    </div>
+
+    {{-- <div class="page login-page">
       <div class="container">
         <div class="form-outer text-center d-flex align-items-center">
           <div class="form-inner">
@@ -78,7 +119,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
   </body>
 </html>
 <script>
